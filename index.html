@@ -3,50 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ayan TeraCloud - Ghost Edition</title>
+    <title>Ayan TeraCloud - Ultra Dark</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #000; color: #ff0000; font-family: 'Courier New', Courier, monospace; }
-        .glitch { font-size: 2.5rem; font-weight: 900; text-transform: uppercase; animation: glitch 0.4s infinite; text-align: center; }
-        @keyframes glitch { 0% { transform: skew(2deg); text-shadow: 2px 0 #0ff; } 50% { transform: skew(-2deg); text-shadow: -2px 0 #f0f; } 100% { transform: skew(0deg); } }
-        .card { background: #0a0a0a; border: 1px solid #300; padding: 15px; border-radius: 8px; transition: 0.3s; cursor: pointer; text-align: center; }
-        .card:hover { border-color: #f00; box-shadow: 0 0 15px #f00; }
-        input, textarea { background: #111 !important; border: 1px solid #400 !important; color: #fff !important; padding: 10px; width: 100%; border-radius: 5px; margin-bottom: 10px; outline: none; }
-        button { background: #600; color: #fff; padding: 10px; border-radius: 5px; width: 100%; font-weight: bold; cursor: pointer; border: none; }
-        button:hover { background: #f00; box-shadow: 0 0 10px #f00; }
-        .breadcrumb { color: #888; font-size: 14px; margin-bottom: 20px; cursor: pointer; }
-        .breadcrumb span:hover { color: #f00; text-decoration: underline; }
+        /* Pura Background Kalo ebong Text Sada */
+        body { background: #000; color: #fff; font-family: 'Arial', sans-serif; }
+        
+        /* Glitch Animation boro ebong Bold */
+        .glitch { font-size: 3.5rem; font-weight: 900; text-transform: uppercase; animation: glitch 0.4s infinite; text-align: center; color: #fff; }
+        @keyframes glitch { 0% { transform: skew(2.2deg); text-shadow: 3px 0 #f00; } 50% { transform: skew(-2.2deg); text-shadow: -3px 0 #0ff; } 100% { transform: skew(0deg); } }
+        
+        /* Card design boro font shoho */
+        .card { background: #111; border: 2px solid #333; padding: 25px; border-radius: 12px; transition: 0.3s; cursor: pointer; text-align: center; font-weight: bold; font-size: 1.2rem; }
+        .card:hover { border-color: #fff; box-shadow: 0 0 20px #fff; transform: translateY(-5px); }
+        
+        /* Input ebong Button Bold & Large */
+        input, textarea { background: #1a1a1a !important; border: 2px solid #444 !important; color: #fff !important; padding: 15px; width: 100%; border-radius: 8px; margin-bottom: 12px; font-weight: bold; font-size: 1.1rem; outline: none; }
+        button { background: #fff; color: #000; padding: 15px; border-radius: 8px; width: 100%; font-weight: 900; font-size: 1.2rem; cursor: pointer; border: none; transition: 0.3s; }
+        button:hover { background: #ccc; box-shadow: 0 0 15px #fff; }
+        
+        .breadcrumb { color: #aaa; font-size: 18px; margin-bottom: 30px; font-weight: bold; cursor: pointer; }
+        .breadcrumb span:hover { color: #fff; text-decoration: underline; }
+        .section-title { font-size: 1.8rem; font-weight: 900; border-bottom: 3px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
     </style>
 </head>
-<body class="p-5">
+<body class="p-8">
 
-    <div class="max-w-4xl mx-auto">
-        <h1 class="glitch mt-5 mb-10">Rafsan Ahmed Ayan</h1>
+    <div class="max-w-5xl mx-auto">
+        <div class="mb-16">
+            <h1 class="glitch">Rafsan Ahmed Ayan</h1>
+            <p class="text-center text-gray-400 font-bold tracking-widest mt-4">UNLIMITED CLOUD STORAGE</p>
+        </div>
 
-        <div class="breadcrumb" id="breadcrumb" onclick="goHome()">🏠 Home</div>
+        <div class="breadcrumb" id="breadcrumb" onclick="goHome()">🏠 HOME</div>
 
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-6 mb-10" id="contentDisplay">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16" id="contentDisplay">
             </div>
 
-        <div id="controls" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+            
             <div class="card text-left">
-                <h3 class="border-b border-red-900 mb-3 pb-1">➕ Create in <span id="currentFolderName">Home</span></h3>
-                <input type="text" id="newFolderName" placeholder="Folder Name">
-                <button onclick="addNewFolder()">Create Folder</button>
+                <h3 class="section-title">📤 MULTI UPLOAD</h3>
+                <p class="text-gray-400 mb-4 font-bold">You can select multiple files at once</p>
+                <input type="file" id="fileInput" multiple> 
+                <button onclick="uploadFiles()">UPLOAD ALL TO TELEGRAM</button>
             </div>
 
             <div class="card text-left">
-                <h3 class="border-b border-red-900 mb-3 pb-1">📤 Upload File</h3>
-                <input type="file" id="fileInput">
-                <button onclick="uploadFile()">Upload to Telegram</button>
+                <h3 class="section-title">📜 KEEP NOTES</h3>
+                <input type="text" id="noteTitle" placeholder="NOTE TITLE">
+                <textarea id="noteContent" rows="3" placeholder="WRITE YOUR NOTE..."></textarea>
+                <button onclick="saveNote()">SAVE NOTE</button>
             </div>
 
             <div class="card text-left md:col-span-2">
-                <h3 class="border-b border-red-900 mb-3 pb-1">📜 Keep Notes</h3>
-                <input type="text" id="noteTitle" placeholder="Title">
-                <textarea id="noteContent" rows="2" placeholder="Secret note..."></textarea>
-                <button onclick="saveNote()">Save to Cloud</button>
+                <h3 class="section-title">➕ CREATE NEW FOLDER</h3>
+                <div class="flex gap-4">
+                    <input type="text" id="newFolderName" placeholder="FOLDER NAME" class="flex-grow">
+                    <button onclick="addNewFolder()" style="width: 200px;">CREATE</button>
+                </div>
             </div>
+
         </div>
     </div>
 
@@ -54,14 +71,13 @@
         const BOT_TOKEN = "8619134830:AAHMs7N2255JPuelNUAXIh5JlnwuPPvfo0c";
         const CHAT_ID = "-1003713977945";
 
-        let currentPath = ["Home"];
+        let currentPath = ["HOME"];
         let storage = {
-            "Home": ["Rafsan Ahmed Ayan", "Family", "Relatives", "Social Media", "Friends", "Apps"]
+            "HOME": ["Rafsan Ahmed Ayan", "Family", "Relatives", "Social Media", "Friends", "Apps"]
         };
 
         function render() {
             const currentFolder = currentPath[currentPath.length - 1];
-            document.getElementById('currentFolderName').innerText = currentFolder;
             document.getElementById('breadcrumb').innerHTML = "🏠 " + currentPath.join(" > ");
             
             const display = document.getElementById('contentDisplay');
@@ -71,26 +87,26 @@
             items.forEach(item => {
                 display.innerHTML += `
                     <div class="card" onclick="openFolder('${item}')">
-                        <span class="block text-4xl mb-2">📁</span>
-                        <span>${item}</span>
+                        <span class="block text-6xl mb-4">📁</span>
+                        <span class="uppercase">${item}</span>
                     </div>`;
             });
         }
 
         function openFolder(name) {
             currentPath.push(name);
-            if (!storage[name]) storage[name] = []; // যদি ফোল্ডারটি নতুন হয়
+            if (!storage[name]) storage[name] = [];
             render();
         }
 
         function goHome() {
-            currentPath = ["Home"];
+            currentPath = ["HOME"];
             render();
         }
 
         function addNewFolder() {
-            const name = document.getElementById('newFolderName').value;
-            if (!name) return alert("নাম দিন!");
+            const name = document.getElementById('newFolderName').value.toUpperCase();
+            if (!name) return alert("Folder-er naam din!");
             const currentFolder = currentPath[currentPath.length - 1];
             storage[currentFolder].push(name);
             storage[name] = [];
@@ -98,35 +114,48 @@
             render();
         }
 
-        async function uploadFile() {
+        // Multiple file upload function
+        async function uploadFiles() {
             const fileInput = document.getElementById('fileInput');
-            if (fileInput.files.length === 0) return alert("ফাইল সিলেক্ট করুন!");
-            const currentFolder = currentPath[currentPath.length - 1];
+            const files = fileInput.files;
+            if (files.length === 0) return alert("File select korun!");
             
-            const formData = new FormData();
-            formData.append('chat_id', CHAT_ID);
-            formData.append('document', fileInput.files[0]);
-            formData.append('caption', `📂 Path: ${currentPath.join("/")}\n📁 Uploaded in: ${currentFolder}`);
+            const currentFolder = currentPath[currentPath.length - 1];
+            alert(files.length + " ti file upload shuru hocche...");
 
-            alert("Uploading...");
-            const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`, { method: 'POST', body: formData });
-            if (res.ok) alert("টেলিগ্রামে আপলোড সফল!");
-            else alert("ফেইল্ড!");
+            for (let i = 0; i < files.length; i++) {
+                const formData = new FormData();
+                formData.append('chat_id', CHAT_ID);
+                formData.append('document', files[i]);
+                formData.append('caption', `📂 PATH: ${currentPath.join("/")}\n📁 FOLDER: ${currentFolder}\n📄 FILE: ${files[i].name}`);
+
+                try {
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`, { method: 'POST', body: formData });
+                } catch (err) {
+                    console.error("Upload failed for: " + files[i].name);
+                }
+            }
+            alert("Shob file Telegram-e pathano hoyeche!");
+            fileInput.value = "";
         }
 
         async function saveNote() {
-            const title = document.getElementById('noteTitle').value;
+            const title = document.getElementById('noteTitle').value.toUpperCase();
             const text = document.getElementById('noteContent').value;
             const currentFolder = currentPath[currentPath.length - 1];
-            const message = `📜 *New Note*\n📍 *Folder:* ${currentFolder}\n📌 *Title:* ${title}\n📝 *Content:* ${text}`;
+            
+            if(!title || !text) return alert("Title ebong Note likhun!");
+
+            const message = `📜 *NEW NOTE SAVED*\n📍 *FOLDER:* ${currentFolder}\n📌 *TITLE:* ${title}\n📝 *CONTENT:* ${text}`;
             
             const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`);
-            if (res.ok) alert("নোট সেভ হয়েছে!");
+            if (res.ok) alert("Note Telegram-e save hoyeche!");
+            
             document.getElementById('noteTitle').value = "";
             document.getElementById('noteContent').value = "";
         }
 
-        render(); // শুরুতে লোড করার জন্য
+        render();
     </script>
 </body>
 </html>
