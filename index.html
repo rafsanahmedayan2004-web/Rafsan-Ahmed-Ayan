@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayan TeraCloud</title>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background: #0f172a; color: white; font-family: sans-serif; user-select: none; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border-radius: 15px; }
+        .upload-btn { background: linear-gradient(135deg, #3b82f6, #8b5cf6); }
+        ::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="pb-24">
+
+    <nav class="p-5 flex justify-between items-center sticky top-0 bg-[#0f172a]/80 backdrop-blur-md z-50">
+        <h1 class="text-xl font-bold text-blue-500"><i class="fas fa-cloud"></i> AyanCloud</h1>
+        <div class="text-[10px] bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full border border-blue-500/30">1TB Storage</div>
+    </nav>
+
+    <div class="px-5">
+        <div class="glass p-5 mb-6 mt-2 border border-white/5">
+            <p class="text-xs text-gray-400">ব্যক্তিগত ক্লাউড স্টোরেজ</p>
+            <h2 class="text-xl font-bold mt-1">স্বাগতম, আয়ান!</h2>
+            <div class="w-full bg-gray-700 h-1.5 rounded-full mt-4">
+                <div id="progressBar" class="bg-blue-500 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+            <p id="statusText" class="text-[10px] text-gray-500 mt-2 italic text-center">ফাইল আপলোড করতে + বাটনে ক্লিক করুন</p>
+        </div>
+
+        <h3 class="text-sm font-semibold mb-4 text-gray-300">আপনার ফাইলসমূহ</h3>
+        <div id="fileContainer" class="flex flex-col gap-3">
+            </div>
+    </div>
+
+    <div class="fixed bottom-0 left-0 right-0 bg-[#1e293b]/90 backdrop-blur-lg p-4 flex justify-around items-center border-t border-white/5">
+        <button class="text-blue-500 flex flex-col items-center"><i class="fas fa-home"></i><span class="text-[9px] mt-1">হোম</span></button>
+        
+        <label for="fileInput" class="upload-btn w-14 h-14 rounded-full flex items-center justify-center -mt-12 shadow-2xl border-4 border-[#0f172a] cursor-pointer active:scale-90 transition">
+            <i class="fas fa-plus text-white text-xl"></i>
+        </label>
+        <input type="file" id="fileInput" class="hidden">
+
+        <button onclick="clearAll()" class="text-gray-400 flex flex-col items-center"><i class="fas fa-trash-alt"></i><span class="text-[9px] mt-1">ক্লিয়ার</span></button>
+    </div>
+
+    <script>
+        const BOT_TOKEN = "8619134830:AAHMs7N2255JPuelNUAXIh5JlnwuPPvfo0c";
+        const CHAT_ID = "-1003713977945";
+
+        const fileInput = document.getElementById('fileInput');
+        const fileContainer = document.getElementById('fileContainer');
+        const statusText = document.getElementById('statusText');
+        const progressBar = document.getElementById('progressBar');
+
+        // Load files from LocalStorage on Startup
+        window.onload = () => {
+            const savedFiles = JSON.parse(localStorage.getItem('ayan_cloud_files')) || [];
+            savedFiles.reverse().forEach(file => renderFile(file.name, file.size, file.url));
+        };
+
+        fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            statusText.innerText = "আপলোড হচ্ছে: " + file.name;
+            progressBar.style.width = "50%";
+
+            const formData = new FormData();
+            formData.append('chat_id', CHAT_ID);
+            formData.append('document', file);
+
+            try {
+                const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                if (result.ok) {
+                    const fileName = file.name;
+                    const fileSize = (file.size / (1024 * 1024)).toFixed(2) + " MB";
+                    // Note: Direct download links from TG require a bit more work, so we'll link to the message
+                    const fileUrl = `https://t.me/c/${CHAT_ID.replace('-100', '')}/${result.result.message_id}`;
+
+                    saveAndRender(fileName, fileSize, fileUrl);
+                    statusText.innerText = "সফলভাবে আপলোড হয়েছে!";
+                    progressBar.style.width = "100%";
+                    setTimeout(() => { progressBar.style.width = "0%"; statusText.innerText = "পরের ফাইলটির জন্য তৈরি"; }, 3000);
+                }
+            } catch (error) {
+                alert("আপলোড ব্যর্থ হয়েছে! ইন্টারনেট চেক করুন।");
+                statusText.innerText = "ব্যর্থ হয়েছে!";
+                progressBar.style.width = "0%";
+            }
+        });
+
+        function saveAndRender(name, size, url) {
+            const files = JSON.parse(localStorage.getItem('ayan_cloud_files')) || [];
+            files.push({ name, size, url });
+            localStorage.setItem('ayan_cloud_files', JSON.stringify(files));
+            renderFile(name, size, url, true);
+        }
+
+        function renderFile(name, size, url, isNew = false) {
+            const div = document.createElement('div');
+            div.className = "glass p-4 flex justify-between items-center border border-white/5 animate-fade-in";
+            div.innerHTML = `
+                <div class="flex items-center gap-3 overflow-hidden">
+                    <div class="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-file-alt text-blue-400"></i>
+                    </div>
+                    <div class="overflow-hidden">
+                        <p class="text-xs font-medium truncate w-44">${name}</p>
+                        <p class="text-[9px] text-gray-500 mt-0.5">${size} • সংরক্ষিত</p>
+                    </div>
+                </div>
+                <a href="${url}" target="_blank" class="w-8 h-8 flex items-center justify-center bg-gray-800 rounded-full text-xs">
+                    <i class="fas fa-download"></i>
+                </a>
+            `;
+            if(isNew) fileContainer.prepend(div);
+            else fileContainer.appendChild(div);
+        }
+
+        function clearAll() {
+            if(confirm("সব লিস্ট ক্লিয়ার করবেন? (টেলিগ্রাম থেকে ফাইল ডিলিট হবে না)")) {
+                localStorage.removeItem('ayan_cloud_files');
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
