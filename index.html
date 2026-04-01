@@ -1,78 +1,132 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Firebase Phone Auth</title>
+    <title>Ayan TeraCloud - Ghost Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #000; color: #ff0000; font-family: 'Courier New', Courier, monospace; overflow-x: hidden; }
+        
+        /* Scary Glitch Animation */
+        .glitch { font-size: 3rem; font-weight: 900; text-transform: uppercase; position: relative; animation: glitch 0.4s infinite; }
+        @keyframes glitch {
+            0% { transform: skew(2deg); text-shadow: 2px 0 #0ff; }
+            50% { transform: skew(-2deg); text-shadow: -2px 0 #f0f; }
+            100% { transform: skew(0deg); }
+        }
+
+        .card { background: #0a0a0a; border: 1px solid #300; padding: 20px; border-radius: 8px; transition: 0.4s; cursor: pointer; text-align: center; }
+        .card:hover { border-color: #f00; box-shadow: 0 0 20px #f00; transform: translateY(-5px); }
+        
+        input, textarea { background: #111 !important; border: 1px solid #400 !important; color: #fff !important; padding: 12px; border-radius: 5px; width: 100%; margin-top: 10px; outline: none; }
+        button { background: #600; color: #fff; padding: 10px 20px; border-radius: 5px; margin-top: 10px; width: 100%; font-weight: bold; transition: 0.3s; border: none; cursor: pointer; }
+        button:hover { background: #f00; box-shadow: 0 0 15px #f00; }
+        
+        .folder-icon { font-size: 40px; margin-bottom: 10px; display: block; }
+        .section-title { font-size: 1.5rem; font-weight: bold; border-bottom: 1px solid #400; padding-bottom: 8px; margin-bottom: 15px; }
+    </style>
 </head>
-<body>
+<body class="p-5">
 
-    <h2>Phone Authentication</h2>
-    
-    <div id="auth-container">
-        <input type="tel" id="phoneNumber" placeholder="+88017XXXXXXXX">
-        <button id="sendCode">Send OTP</button>
+    <div class="max-w-4xl mx-auto">
+        <div class="text-center mt-10 mb-16">
+            <h1 class="glitch">Rafsan Ahmed Ayan</h1>
+            <p class="text-gray-500 text-xs tracking-widest mt-2 uppercase">Unlimited Telegram Cloud Storage</p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-6 mb-12" id="folderDisplay">
+            <div class="card"><span class="folder-icon">💀</span> Rafsan Ahmed Ayan</div>
+            <div class="card"><span class="folder-icon">👨‍👩‍👦</span> Family</div>
+            <div class="card"><span class="folder-icon">🧛</span> Relatives</div>
+            <div class="card"><span class="folder-icon">🌐</span> Social Media</div>
+            <div class="card"><span class="folder-icon">👥</span> Friends</div>
+            <div class="card"><span class="folder-icon">📱</span> Apps</div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            <div class="card text-left">
+                <h2 class="section-title">📜 Keep Notes</h2>
+                <input type="text" id="noteTitle" placeholder="Note Name (Title)">
+                <textarea id="noteContent" rows="3" placeholder="Write your secret here..."></textarea>
+                <button onclick="sendToTelegram('note')">Save to Cloud</button>
+            </div>
+
+            <div class="card text-left">
+                <h2 class="section-title">📤 Cloud Upload</h2>
+                <p class="text-xs text-gray-500 mb-2">Select Apps or Files to store</p>
+                <input type="file" id="fileInput">
+                <button onclick="sendToTelegram('file')">Upload to Telegram</button>
+            </div>
+
+            <div class="card text-left md:col-span-2">
+                <h2 class="section-title">➕ Create New Folder</h2>
+                <div class="flex gap-2">
+                    <input type="text" id="newFolderName" placeholder="Enter folder name..." class="flex-grow">
+                    <button onclick="createFolder()" style="width: auto; margin-top: 10px;">Create</button>
+                </div>
+            </div>
+
+        </div>
     </div>
 
-    <div id="otp-container" style="display:none;">
-        <input type="text" id="verificationCode" placeholder="Enter OTP">
-        <button id="verifyCode">Verify OTP</button>
-    </div>
+    <script>
+        // আপনার দেওয়া টেলিগ্রাম কনফিগারেশন
+        const BOT_TOKEN = "8619134830:AAHMs7N2255JPuelNUAXIh5JlnwuPPvfo0c"; 
+        const CHAT_ID = "-1003713977945"; 
 
-    <div id="recaptcha-container"></div>
+        // নতুন ফোল্ডার ডিসপ্লেতে দেখানো
+        function createFolder() {
+            const folderName = document.getElementById('newFolderName').value;
+            if (!folderName) return alert("ফোল্ডারের নাম দিন!");
+            
+            const folderHtml = `<div class="card"><span class="folder-icon">📁</span> ${folderName}</div>`;
+            document.getElementById('folderDisplay').insertAdjacentHTML('beforeend', folderHtml);
+            alert("ফোল্ডার '" + folderName + "' তৈরি হয়েছে (সাময়িকভাবে)");
+            document.getElementById('newFolderName').value = '';
+        }
 
-    <script type="module">
-        // Firebase SDK ইমপোর্ট করা
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        async function sendToTelegram(type) {
+            if (type === 'note') {
+                const title = document.getElementById('noteTitle').value;
+                const text = document.getElementById('noteContent').value;
+                if (!title || !text) return alert("টাইটেল এবং নোট দুটোই লিখুন!");
 
-        // আপনার স্ক্রিনশট থেকে নেওয়া কনফিগারেশন
-        const firebaseConfig = {
-            apiKey: "AIzaSyAboeMS-WDLs7fe12jmL9t6YgX8XMKQbeQ",
-            authDomain: "rafsan-ahmed-ayan.firebaseapp.com",
-            projectId: "rafsan-ahmed-ayan",
-            storageBucket: "rafsan-ahmed-ayan.firebasestorage.app",
-            messagingSenderId: "418535718605",
-            appId: "1:418535718605:web:62b5c216a2fe191df1b384",
-            measurementId: "G-82E7JYPSRQ"
-        };
+                const message = `💀 *New Note From Ayan Cloud*\n\n📌 *Title:* ${title}\n📝 *Content:* ${text}`;
+                const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
+                
+                try {
+                    const res = await fetch(url);
+                    if (res.ok) {
+                        alert("নোট টেলিগ্রামে সেভ হয়েছে!");
+                        document.getElementById('noteTitle').value = '';
+                        document.getElementById('noteContent').value = '';
+                    } else { alert("Error! বোট টোকেন বা আইডি চেক করুন।"); }
+                } catch (err) { alert("সার্ভারে সমস্যা হচ্ছে!"); }
 
-        // Firebase শুরু করা
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
+            } else if (type === 'file') {
+                const fileInput = document.getElementById('fileInput');
+                if (fileInput.files.length === 0) return alert("ফাইল সিলেক্ট করুন!");
 
-        // রিক্যাপচা সেটআপ
-        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-            'size': 'normal'
-        });
+                const file = fileInput.files[0];
+                const formData = new FormData();
+                formData.append('chat_id', CHAT_ID);
+                formData.append('document', file);
+                formData.append('caption', `💀 *Ayan Cloud Upload*\n📂 *File Name:* ${file.name}`);
 
-        // ওটিপি পাঠানোর ফাংশন
-        document.getElementById('sendCode').onclick = function() {
-            const number = document.getElementById('phoneNumber').value;
-            const appVerifier = window.recaptchaVerifier;
+                alert("টেলিগ্রামে আপলোড হচ্ছে... কিছুক্ষণ অপেক্ষা করুন।");
 
-            signInWithPhoneNumber(auth, number, appVerifier)
-                .then((confirmationResult) => {
-                    window.confirmationResult = confirmationResult;
-                    document.getElementById('auth-container').style.display = 'none';
-                    document.getElementById('otp-container').style.display = 'block';
-                    alert("OTP sent!");
-                }).catch((error) => {
-                    alert("Error: " + error.message);
-                });
-        };
-
-        // ওটিপি যাচাই করার ফাংশন
-        document.getElementById('verifyCode').onclick = function() {
-            const code = document.getElementById('verificationCode').value;
-            confirmationResult.confirm(code).then((result) => {
-                alert("Login successful!");
-                const user = result.user;
-                console.log(user);
-            }).catch((error) => {
-                alert("Invalid OTP!");
-            });
-        };
+                try {
+                    const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    if (res.ok) alert("ফাইল আপনার টেলিগ্রাম ক্লাউডে সফলভাবে আপলোড হয়েছে!");
+                    else alert("আপলোড ফেইল্ড! বোটকে গ্রুপে অ্যাডমিনিস্ট্রেটর হিসেবে অ্যাড করেছেন তো?");
+                } catch (err) { alert("টেলিগ্রামের সাথে কানেক্ট করা যাচ্ছে না।"); }
+            }
+        }
     </script>
 </body>
 </html>
