@@ -6,127 +6,127 @@
     <title>Ayan TeraCloud - Ghost Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #000; color: #ff0000; font-family: 'Courier New', Courier, monospace; overflow-x: hidden; }
-        
-        /* Scary Glitch Animation */
-        .glitch { font-size: 3rem; font-weight: 900; text-transform: uppercase; position: relative; animation: glitch 0.4s infinite; }
-        @keyframes glitch {
-            0% { transform: skew(2deg); text-shadow: 2px 0 #0ff; }
-            50% { transform: skew(-2deg); text-shadow: -2px 0 #f0f; }
-            100% { transform: skew(0deg); }
-        }
-
-        .card { background: #0a0a0a; border: 1px solid #300; padding: 20px; border-radius: 8px; transition: 0.4s; cursor: pointer; text-align: center; }
-        .card:hover { border-color: #f00; box-shadow: 0 0 20px #f00; transform: translateY(-5px); }
-        
-        input, textarea { background: #111 !important; border: 1px solid #400 !important; color: #fff !important; padding: 12px; border-radius: 5px; width: 100%; margin-top: 10px; outline: none; }
-        button { background: #600; color: #fff; padding: 10px 20px; border-radius: 5px; margin-top: 10px; width: 100%; font-weight: bold; transition: 0.3s; border: none; cursor: pointer; }
-        button:hover { background: #f00; box-shadow: 0 0 15px #f00; }
-        
-        .folder-icon { font-size: 40px; margin-bottom: 10px; display: block; }
-        .section-title { font-size: 1.5rem; font-weight: bold; border-bottom: 1px solid #400; padding-bottom: 8px; margin-bottom: 15px; }
+        body { background: #000; color: #ff0000; font-family: 'Courier New', Courier, monospace; }
+        .glitch { font-size: 2.5rem; font-weight: 900; text-transform: uppercase; animation: glitch 0.4s infinite; text-align: center; }
+        @keyframes glitch { 0% { transform: skew(2deg); text-shadow: 2px 0 #0ff; } 50% { transform: skew(-2deg); text-shadow: -2px 0 #f0f; } 100% { transform: skew(0deg); } }
+        .card { background: #0a0a0a; border: 1px solid #300; padding: 15px; border-radius: 8px; transition: 0.3s; cursor: pointer; text-align: center; }
+        .card:hover { border-color: #f00; box-shadow: 0 0 15px #f00; }
+        input, textarea { background: #111 !important; border: 1px solid #400 !important; color: #fff !important; padding: 10px; width: 100%; border-radius: 5px; margin-bottom: 10px; outline: none; }
+        button { background: #600; color: #fff; padding: 10px; border-radius: 5px; width: 100%; font-weight: bold; cursor: pointer; border: none; }
+        button:hover { background: #f00; box-shadow: 0 0 10px #f00; }
+        .breadcrumb { color: #888; font-size: 14px; margin-bottom: 20px; cursor: pointer; }
+        .breadcrumb span:hover { color: #f00; text-decoration: underline; }
     </style>
 </head>
 <body class="p-5">
 
     <div class="max-w-4xl mx-auto">
-        <div class="text-center mt-10 mb-16">
-            <h1 class="glitch">Rafsan Ahmed Ayan</h1>
-            <p class="text-gray-500 text-xs tracking-widest mt-2 uppercase">Unlimited Telegram Cloud Storage</p>
-        </div>
+        <h1 class="glitch mt-5 mb-10">Rafsan Ahmed Ayan</h1>
 
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-6 mb-12" id="folderDisplay">
-            <div class="card"><span class="folder-icon">💀</span> Rafsan Ahmed Ayan</div>
-            <div class="card"><span class="folder-icon">👨‍👩‍👦</span> Family</div>
-            <div class="card"><span class="folder-icon">🧛</span> Relatives</div>
-            <div class="card"><span class="folder-icon">🌐</span> Social Media</div>
-            <div class="card"><span class="folder-icon">👥</span> Friends</div>
-            <div class="card"><span class="folder-icon">📱</span> Apps</div>
-        </div>
+        <div class="breadcrumb" id="breadcrumb" onclick="goHome()">🏠 Home</div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-6 mb-10" id="contentDisplay">
+            </div>
+
+        <div id="controls" class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="card text-left">
-                <h2 class="section-title">📜 Keep Notes</h2>
-                <input type="text" id="noteTitle" placeholder="Note Name (Title)">
-                <textarea id="noteContent" rows="3" placeholder="Write your secret here..."></textarea>
-                <button onclick="sendToTelegram('note')">Save to Cloud</button>
+                <h3 class="border-b border-red-900 mb-3 pb-1">➕ Create in <span id="currentFolderName">Home</span></h3>
+                <input type="text" id="newFolderName" placeholder="Folder Name">
+                <button onclick="addNewFolder()">Create Folder</button>
             </div>
 
             <div class="card text-left">
-                <h2 class="section-title">📤 Cloud Upload</h2>
-                <p class="text-xs text-gray-500 mb-2">Select Apps or Files to store</p>
+                <h3 class="border-b border-red-900 mb-3 pb-1">📤 Upload File</h3>
                 <input type="file" id="fileInput">
-                <button onclick="sendToTelegram('file')">Upload to Telegram</button>
+                <button onclick="uploadFile()">Upload to Telegram</button>
             </div>
 
             <div class="card text-left md:col-span-2">
-                <h2 class="section-title">➕ Create New Folder</h2>
-                <div class="flex gap-2">
-                    <input type="text" id="newFolderName" placeholder="Enter folder name..." class="flex-grow">
-                    <button onclick="createFolder()" style="width: auto; margin-top: 10px;">Create</button>
-                </div>
+                <h3 class="border-b border-red-900 mb-3 pb-1">📜 Keep Notes</h3>
+                <input type="text" id="noteTitle" placeholder="Title">
+                <textarea id="noteContent" rows="2" placeholder="Secret note..."></textarea>
+                <button onclick="saveNote()">Save to Cloud</button>
             </div>
-
         </div>
     </div>
 
     <script>
-        // আপনার দেওয়া টেলিগ্রাম কনফিগারেশন
-        const BOT_TOKEN = "8619134830:AAHMs7N2255JPuelNUAXIh5JlnwuPPvfo0c"; 
-        const CHAT_ID = "-1003713977945"; 
+        const BOT_TOKEN = "8619134830:AAHMs7N2255JPuelNUAXIh5JlnwuPPvfo0c";
+        const CHAT_ID = "-1003713977945";
 
-        // নতুন ফোল্ডার ডিসপ্লেতে দেখানো
-        function createFolder() {
-            const folderName = document.getElementById('newFolderName').value;
-            if (!folderName) return alert("ফোল্ডারের নাম দিন!");
+        let currentPath = ["Home"];
+        let storage = {
+            "Home": ["Rafsan Ahmed Ayan", "Family", "Relatives", "Social Media", "Friends", "Apps"]
+        };
+
+        function render() {
+            const currentFolder = currentPath[currentPath.length - 1];
+            document.getElementById('currentFolderName').innerText = currentFolder;
+            document.getElementById('breadcrumb').innerHTML = "🏠 " + currentPath.join(" > ");
             
-            const folderHtml = `<div class="card"><span class="folder-icon">📁</span> ${folderName}</div>`;
-            document.getElementById('folderDisplay').insertAdjacentHTML('beforeend', folderHtml);
-            alert("ফোল্ডার '" + folderName + "' তৈরি হয়েছে (সাময়িকভাবে)");
-            document.getElementById('newFolderName').value = '';
+            const display = document.getElementById('contentDisplay');
+            display.innerHTML = "";
+
+            const items = storage[currentFolder] || [];
+            items.forEach(item => {
+                display.innerHTML += `
+                    <div class="card" onclick="openFolder('${item}')">
+                        <span class="block text-4xl mb-2">📁</span>
+                        <span>${item}</span>
+                    </div>`;
+            });
         }
 
-        async function sendToTelegram(type) {
-            if (type === 'note') {
-                const title = document.getElementById('noteTitle').value;
-                const text = document.getElementById('noteContent').value;
-                if (!title || !text) return alert("টাইটেল এবং নোট দুটোই লিখুন!");
-
-                const message = `💀 *New Note From Ayan Cloud*\n\n📌 *Title:* ${title}\n📝 *Content:* ${text}`;
-                const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
-                
-                try {
-                    const res = await fetch(url);
-                    if (res.ok) {
-                        alert("নোট টেলিগ্রামে সেভ হয়েছে!");
-                        document.getElementById('noteTitle').value = '';
-                        document.getElementById('noteContent').value = '';
-                    } else { alert("Error! বোট টোকেন বা আইডি চেক করুন।"); }
-                } catch (err) { alert("সার্ভারে সমস্যা হচ্ছে!"); }
-
-            } else if (type === 'file') {
-                const fileInput = document.getElementById('fileInput');
-                if (fileInput.files.length === 0) return alert("ফাইল সিলেক্ট করুন!");
-
-                const file = fileInput.files[0];
-                const formData = new FormData();
-                formData.append('chat_id', CHAT_ID);
-                formData.append('document', file);
-                formData.append('caption', `💀 *Ayan Cloud Upload*\n📂 *File Name:* ${file.name}`);
-
-                alert("টেলিগ্রামে আপলোড হচ্ছে... কিছুক্ষণ অপেক্ষা করুন।");
-
-                try {
-                    const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`, {
-                        method: 'POST',
-                        body: formData
-                    });
-                    if (res.ok) alert("ফাইল আপনার টেলিগ্রাম ক্লাউডে সফলভাবে আপলোড হয়েছে!");
-                    else alert("আপলোড ফেইল্ড! বোটকে গ্রুপে অ্যাডমিনিস্ট্রেটর হিসেবে অ্যাড করেছেন তো?");
-                } catch (err) { alert("টেলিগ্রামের সাথে কানেক্ট করা যাচ্ছে না।"); }
-            }
+        function openFolder(name) {
+            currentPath.push(name);
+            if (!storage[name]) storage[name] = []; // যদি ফোল্ডারটি নতুন হয়
+            render();
         }
+
+        function goHome() {
+            currentPath = ["Home"];
+            render();
+        }
+
+        function addNewFolder() {
+            const name = document.getElementById('newFolderName').value;
+            if (!name) return alert("নাম দিন!");
+            const currentFolder = currentPath[currentPath.length - 1];
+            storage[currentFolder].push(name);
+            storage[name] = [];
+            document.getElementById('newFolderName').value = "";
+            render();
+        }
+
+        async function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput.files.length === 0) return alert("ফাইল সিলেক্ট করুন!");
+            const currentFolder = currentPath[currentPath.length - 1];
+            
+            const formData = new FormData();
+            formData.append('chat_id', CHAT_ID);
+            formData.append('document', fileInput.files[0]);
+            formData.append('caption', `📂 Path: ${currentPath.join("/")}\n📁 Uploaded in: ${currentFolder}`);
+
+            alert("Uploading...");
+            const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`, { method: 'POST', body: formData });
+            if (res.ok) alert("টেলিগ্রামে আপলোড সফল!");
+            else alert("ফেইল্ড!");
+        }
+
+        async function saveNote() {
+            const title = document.getElementById('noteTitle').value;
+            const text = document.getElementById('noteContent').value;
+            const currentFolder = currentPath[currentPath.length - 1];
+            const message = `📜 *New Note*\n📍 *Folder:* ${currentFolder}\n📌 *Title:* ${title}\n📝 *Content:* ${text}`;
+            
+            const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`);
+            if (res.ok) alert("নোট সেভ হয়েছে!");
+            document.getElementById('noteTitle').value = "";
+            document.getElementById('noteContent').value = "";
+        }
+
+        render(); // শুরুতে লোড করার জন্য
     </script>
 </body>
 </html>
